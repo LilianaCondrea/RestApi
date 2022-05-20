@@ -5,7 +5,7 @@ from ..models import Profile
 from .serializers import (
     UserListSerializer, UserDetailSerializer, ProfileUserSerializer
 )
-from permissions import IsSuperUserOrOwner, IsSuperUser
+from permissions import IsSuperUserOrOwnerOrReadOnly, IsSuperUser
 
 
 class UserListView(generics.ListAPIView):
@@ -17,7 +17,7 @@ class UserListView(generics.ListAPIView):
 
 
 class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = (IsSuperUserOrOwner,)
+    permission_classes = (IsSuperUserOrOwnerOrReadOnly,)
     serializer_class = UserDetailSerializer
 
     def get_object(self):
@@ -28,7 +28,7 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class ProfileUserView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = (IsSuperUserOrOwner,)
+    permission_classes = (IsSuperUserOrOwnerOrReadOnly,)
     serializer_class = ProfileUserSerializer
 
     def get_object(self):

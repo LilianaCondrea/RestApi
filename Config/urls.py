@@ -6,8 +6,8 @@ from dj_rest_auth.views import PasswordResetView, PasswordResetConfirmView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('account/', include('Account.urls', namespace='account')),
-    path('blog/', include('Post.urls', namespace='blog')),
+    path('account/', include('Account.urls')),
+    path('blog/', include('Post.urls')),
     # Password Reset
     path('', include('allauth.urls')),
 
