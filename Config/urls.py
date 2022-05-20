@@ -8,6 +8,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('account/', include('Account.urls')),
     path('blog/', include('Post.urls')),
+    path('comment/', include('Comment.urls')),
     # Password Reset
     path('', include('allauth.urls')),
 
