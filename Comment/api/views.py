@@ -14,13 +14,15 @@ from permissions import IsSuperUserOrOwnerOrReadOnly
 class CommentCreateView(CreateAPIView):
     queryset = Comments.objects.all()
     serializer_class = CommentCreateUpdateDeleteSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, ]
 
     def perform_create(self, serializer):
         blog = get_object_or_404(Blog, id=self.kwargs['pk'])
         user = self.request.user
         if Comments.objects.filter(post=blog, user=user).exists():
             raise ValidationError('You can only comment once for this blog !')
+        elif blog.allow_comment is False:
+            raise ValidationError('This blog is not open for commenting !')
         serializer.save(user=user, post=blog)
 
 
