@@ -1,21 +1,16 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 
 
 class Category(models.Model):
-    title = models.CharField(max_length=50, null=False, blank=False, verbose_name=_('Title'), )
-    slug = models.SlugField(null=True, blank=True, verbose_name=_('Slug'), )
+    title = models.CharField(
+        max_length=50, null=False, blank=False, verbose_name=_('Title')
+    )
 
     def __str__(self):
         return self.title
-
-
-class Tag(models.Model):
-    name = models.CharField(max_length=100, null=False, blank=False, verbose_name=_('Name'), )
-
-    def __str__(self):
-        return self.name
 
 
 class Blog(models.Model):
@@ -63,12 +58,6 @@ class Blog(models.Model):
         blank=True,
         verbose_name=_('Category'),
     )
-    tags = models.ManyToManyField(
-        Tag,
-        default=None,
-        blank=True,
-        verbose_name=_('Tags'),
-    )
 
     allow_comment = models.BooleanField(
         default=True,
@@ -86,6 +75,11 @@ class Blog(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.content}"
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.content)
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = _('Blog')
