@@ -8,12 +8,14 @@ from .serializers import (
 )
 from Comment.models import Comments
 from Post.models import Blog
-from permissions import IsSuperUserOrOwnerOrReadOnly
+from Extension.permissions import IsSuperUserOrOwnerOrReadOnly
+from Extension.throttling import CreateCommentThrottle
 
 
 class CommentCreateView(CreateAPIView):
     queryset = Comments.objects.all()
     serializer_class = CommentCreateUpdateDeleteSerializer
+    throttle_classes = [CreateCommentThrottle, ]
     permission_classes = [IsAuthenticated, ]
 
     def perform_create(self, serializer):

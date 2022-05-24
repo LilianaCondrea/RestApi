@@ -3,13 +3,15 @@ from datetime import timedelta
 from pathlib import Path
 from decouple import config
 
+import Extension.throttling
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = config('SECRET_KEY')
 
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='', cast=lambda v: [s.strip() for s in v.split(',')])
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*', cast=lambda v: [s.strip() for s in v.split(',')])
 
 AUTH_USER_MODEL = 'Account.User'
 
@@ -21,11 +23,13 @@ DJANGO_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+
 ]
 LOCAL_APPS = [
     'Account.apps.AccountConfig',
     'Comment.apps.CommentConfig',
     'Post.apps.PostConfig',
+    'Extension',
 ]
 
 THIRD_PARTY_APPS = [
@@ -151,7 +155,12 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
-    ]
+    ],
+    'DEFAULT_THROTTLE_CLASSES': [
+        'Extension.Throttling.CreateBlogThrottle',
+        'Extension.Throttling.CreateCommentThrottle'
+    ],
+
 }
 
 REST_USE_JWT = True

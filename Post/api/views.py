@@ -1,29 +1,45 @@
-from rest_framework import generics, permissions
-from .serializers import BlogListSerializer, BlogCreateSerializer
-from ..models import Blog
+from rest_framework.generics import ListAPIView, RetrieveUpdateDestroyAPIView, CreateAPIView
+from rest_framework.permissions import IsAuthenticated
+from Extension.throttling import CreateBlogThrottle
+from Post.models import Blog, Category
+from .serializers import (
+    BlogListSerializer, BlogCreateSerializer,
+    BlogDetailSerializer, CategorySerializer
+)
+from Extension.permissions import IsSuperUserOrOwnerOrReadOnly
 
 
-class BlogListView(generics.ListAPIView):
-    permission_classes = [permissions.AllowAny, ]
+class CategoryListView(ListAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+
+# ______________________________________________
+
+class BlogListView(ListAPIView):
+    queryset = Blog.objects.all()
     serializer_class = BlogListSerializer
 
-    def get_queryset(self):
-        return Blog.objects.all()
 
+# ______________________________________________
 
-class BlogDetailView(generics.RetrieveAPIView):
-    permission_classes = [permissions.AllowAny, ]
-    serializer_class = BlogListSerializer
+class BlogDetailUpdateDeleteView(RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsSuperUserOrOwnerOrReadOnly, ]
+    serializer_class = BlogDetailSerializer
+    lookup_field = 'slug'
 
     def get_object(self):
-        pk = self.kwargs['pk']
-        return Blog.objects.get(id=pk)
+        slug = self.kwargs['slug']
+        return Blog.objects.get(slug__exact=slug)
 
 
-class BlogCreateView(generics.CreateAPIView):
-    permission_classes = [permissions.AllowAny, ]
+# ______________________________________________
+
+class BlogCreateView(CreateAPIView):
+    permission_classes = [IsAuthenticated, ]
     serializer_class = BlogCreateSerializer
     queryset = Blog.objects.all()
+    throttle_classes = [CreateBlogThrottle, ]
 
     def perform_create(self, serializer):
         return serializer.save(
