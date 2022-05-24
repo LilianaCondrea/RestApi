@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
-from Post.models import Blog
+from Post.models import Blog, Category
 
 
 class BlogTestApiView(TestCase):
@@ -15,14 +15,19 @@ class BlogTestApiView(TestCase):
             email='testemail2',
             password='testpassword2',
         )
+        # Create a Category
+        self.category = Category.objects.create(
+            title='Test Category',
+            slug='test-category',
+        )
         # Create a blog
         self.blog = Blog.objects.create(
             content='test content',
             description='test description',
             user=self.user1,
+            category=self.category,
         )
 
     def test_blog_list(self):
-        response = self.client.get('/api/blog/blogs/')
+        response = self.client.get('/blog/api/blogs/')
         self.assertEqual(response.status_code, 200)
-
