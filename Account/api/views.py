@@ -5,7 +5,7 @@ from ..models import Profile
 from .serializers import (
     UserListSerializer, UserDetailSerializer, ProfileUserSerializer
 )
-from permissions import IsSuperUserOrOwnerOrReadOnly, IsSuperUser
+from Extension.permissions import IsSuperUserOrOwnerOrReadOnly, IsSuperUser
 
 
 class UserListView(generics.ListAPIView):
