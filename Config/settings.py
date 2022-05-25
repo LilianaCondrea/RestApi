@@ -154,10 +154,6 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
     ],
-    'DEFAULT_THROTTLE_CLASSES': [
-        'Extensions.throttling.CreateBlogThrottle',
-        'Extensions.throttling.CreateCommentThrottle'
-    ],
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend',
         'rest_framework.filters.SearchFilter',
