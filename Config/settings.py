@@ -3,8 +3,6 @@ from datetime import timedelta
 from pathlib import Path
 from decouple import config
 
-import Extension.throttling
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = config('SECRET_KEY')
@@ -157,8 +155,8 @@ REST_FRAMEWORK = {
         'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
     ],
     'DEFAULT_THROTTLE_CLASSES': [
-        'Extension.Throttling.CreateBlogThrottle',
-        'Extension.Throttling.CreateCommentThrottle'
+        'Extension.throttling.CreateBlogThrottle',
+        'Extension.throttling.CreateCommentThrottle'
     ],
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend',
