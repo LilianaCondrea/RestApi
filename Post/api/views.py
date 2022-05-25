@@ -1,6 +1,5 @@
 from rest_framework.generics import ListAPIView, RetrieveUpdateDestroyAPIView, CreateAPIView
 from rest_framework.permissions import IsAuthenticated
-from django_filters.rest_framework import DjangoFilterBackend
 from Extensions.throttling import CreateBlogThrottle
 from Post.models import Blog, Category
 from .serializers import (
@@ -20,8 +19,9 @@ class CategoryListView(ListAPIView):
 class BlogListView(ListAPIView):
     queryset = Blog.objects.all()
     serializer_class = BlogListSerializer
-    filter_backends = [DjangoFilterBackend]
     filterset_fields = ['category__title', 'allow_comment', ]
+    search_fields = ['content', 'description', 'category__title', ]
+    ordering_fields = ['visited', 'created_at', ]
 
 
 # ______________________________________________
