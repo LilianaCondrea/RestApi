@@ -160,7 +160,11 @@ REST_FRAMEWORK = {
         'Extension.Throttling.CreateBlogThrottle',
         'Extension.Throttling.CreateCommentThrottle'
     ],
-
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.SearchFilter',
+        'rest_framework.filters.OrderingFilter',
+    ],
 }
 
 REST_USE_JWT = True

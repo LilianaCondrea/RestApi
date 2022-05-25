@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from rest_framework import generics
+from django_filters.rest_framework.backends import DjangoFilterBackend
 from ..models import Profile
 from .serializers import (
     UserListSerializer, UserDetailSerializer, ProfileUserSerializer
@@ -11,6 +12,8 @@ from Extension.permissions import IsSuperUserOrOwnerOrReadOnly, IsSuperUser
 class UserListView(generics.ListAPIView):
     permission_classes = (IsSuperUser,)
     serializer_class = UserListSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filterset_fields = ('username', 'email', 'is_superuser')
 
     def get_queryset(self):
         return get_user_model().objects.all()
