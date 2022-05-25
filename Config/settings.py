@@ -27,7 +27,7 @@ LOCAL_APPS = [
     'Account.apps.AccountConfig',
     'Comment.apps.CommentConfig',
     'Post.apps.PostConfig',
-    'Extension',
+    'Extensions',
 ]
 
 THIRD_PARTY_APPS = [
@@ -155,8 +155,8 @@ REST_FRAMEWORK = {
         'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
     ],
     'DEFAULT_THROTTLE_CLASSES': [
-        'Extension.throttling.CreateBlogThrottle',
-        'Extension.throttling.CreateCommentThrottle'
+        'Extensions.throttling.CreateBlogThrottle',
+        'Extensions.throttling.CreateCommentThrottle'
     ],
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend',

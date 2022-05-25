@@ -1,13 +1,13 @@
 from rest_framework.generics import ListAPIView, RetrieveUpdateDestroyAPIView, CreateAPIView
 from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
-from Extension.throttling import CreateBlogThrottle
+from Extensions.throttling import CreateBlogThrottle
 from Post.models import Blog, Category
 from .serializers import (
     BlogListSerializer, BlogCreateSerializer,
     BlogDetailSerializer, CategorySerializer
 )
-from Extension.permissions import IsSuperUserOrOwnerOrReadOnly
+from Extensions.permissions import IsSuperUserOrOwnerOrReadOnly
 
 
 class CategoryListView(ListAPIView):

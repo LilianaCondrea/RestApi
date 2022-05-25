@@ -8,8 +8,8 @@ from .serializers import (
 )
 from Comment.models import Comments
 from Post.models import Blog
-from Extension.permissions import IsSuperUserOrOwnerOrReadOnly
-from Extension.throttling import CreateCommentThrottle
+from Extensions.permissions import IsSuperUserOrOwnerOrReadOnly
+from Extensions.throttling import CreateCommentThrottle
 
 
 class CommentCreateView(CreateAPIView):

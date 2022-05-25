@@ -2846,7 +2846,7 @@ function augment(regex, captureNames, xSource, xFlags, isInternalOnly) {
         for (p in XRegExp.prototype) {
             // An `XRegExp.prototype.hasOwnProperty(p)` check wouldn't be worth it here, since this
             // is performance sensitive, and enumerable `Object.prototype` or `RegExp.prototype`
-            // Extension exist on `regex.prototype` anyway
+            // Extensions exist on `regex.prototype` anyway
             regex[p] = XRegExp.prototype[p];
         }
     }

@@ -54,7 +54,7 @@ function findPosY(obj) {
 }
 
 //-----------------------------------------------------------------------------
-// Date object Extension
+// Date object Extensions
 // ----------------------------------------------------------------------------
 {
     Date.prototype.getTwelveHours = function() {
@@ -131,7 +131,7 @@ function findPosY(obj) {
     };
 
     // ----------------------------------------------------------------------------
-    // String object Extension
+    // String object Extensions
     // ----------------------------------------------------------------------------
     String.prototype.strptime = function(format) {
         const split_format = format.split(/[.\-/]/);
