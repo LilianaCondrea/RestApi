@@ -7,6 +7,7 @@ from .serializers import (
     BlogDetailSerializer, CategorySerializer
 )
 from Extensions.permissions import IsSuperUserOrOwnerOrReadOnly
+from Extensions.pagination import CustomPagination
 
 
 class CategoryListView(ListAPIView):
@@ -22,6 +23,7 @@ class BlogListView(ListAPIView):
     filterset_fields = ['category__title', 'allow_comment', ]
     search_fields = ['content', 'description', 'category__title', ]
     ordering_fields = ['visited', 'created_at', ]
+    pagination_class = CustomPagination
 
 
 # ______________________________________________

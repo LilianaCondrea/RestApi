@@ -6,6 +6,7 @@ from .serializers import (
     UserListSerializer, UserDetailSerializer, ProfileUserSerializer
 )
 from Extensions.permissions import IsSuperUserOrOwnerOrReadOnly, IsSuperUser
+from Extensions.pagination import CustomPagination
 
 
 class UserListView(generics.ListAPIView):
@@ -14,6 +15,7 @@ class UserListView(generics.ListAPIView):
     filterset_fields = ('username', 'is_superuser')
     search_fields = ['email', 'phone']
     ordering_fields = ['date_joined', 'is_superuser']
+    pagination_class = CustomPagination
 
     def get_queryset(self):
         return get_user_model().objects.all()
