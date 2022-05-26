@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework.generics import ListAPIView, RetrieveUpdateDestroyAPIView, CreateAPIView
 from rest_framework.permissions import IsAuthenticated
 from Extensions.throttling import CreateBlogThrottle
@@ -35,7 +36,10 @@ class BlogDetailUpdateDeleteView(RetrieveUpdateDestroyAPIView):
 
     def get_object(self):
         slug = self.kwargs['slug']
-        return Blog.objects.get(slug__exact=slug)
+        blog = get_object_or_404(Blog, slug__exact=slug)
+        blog.visited += 1
+        blog.save()
+        return blog
 
 
 # ______________________________________________

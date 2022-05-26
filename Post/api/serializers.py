@@ -18,7 +18,7 @@ class BlogListSerializer(serializers.ModelSerializer):
         fields = [
             'writer', 'content',
             'category', 'description',
-            'poster', 'created_at',
+            'poster', 'visited', 'created_at',
         ]
 
     def get_title(self, obj):
