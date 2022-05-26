@@ -24,7 +24,8 @@ class UserDetailSerializer(serializers.HyperlinkedModelSerializer):
         fields = [
             'url', 'id',
             'username', 'email',
-            'phone', 'password'
+            'phone', 'date_joined',
+            'last_update', 'last_login',
         ]
         extra_kwargs = {
             'phone': {'required': True}

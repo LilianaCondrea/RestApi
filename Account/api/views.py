@@ -1,15 +1,15 @@
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
-from rest_framework import generics
+from rest_framework.generics import ListAPIView, RetrieveUpdateDestroyAPIView
 from ..models import Profile
 from .serializers import (
     UserListSerializer, UserDetailSerializer, ProfileUserSerializer
 )
-from Extensions.permissions import IsSuperUserOrOwnerOrReadOnly, IsSuperUser
+from Extensions.permissions import IsSuperUserOrUserOrReadOnly, IsSuperUser
 from Extensions.pagination import CustomPagination
 
 
-class UserListView(generics.ListAPIView):
+class UserListView(ListAPIView):
     permission_classes = (IsSuperUser,)
     serializer_class = UserListSerializer
     filterset_fields = ('username', 'is_superuser')
@@ -21,8 +21,8 @@ class UserListView(generics.ListAPIView):
         return get_user_model().objects.all()
 
 
-class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = (IsSuperUserOrOwnerOrReadOnly,)
+class UserDetailView(RetrieveUpdateDestroyAPIView):
+    permission_classes = (IsSuperUserOrUserOrReadOnly,)
     serializer_class = UserDetailSerializer
 
     def get_object(self):
@@ -32,8 +32,8 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
         return obj
 
 
-class ProfileUserView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = (IsSuperUserOrOwnerOrReadOnly,)
+class ProfileUserView(RetrieveUpdateDestroyAPIView):
+    permission_classes = (IsSuperUserOrUserOrReadOnly,)
     serializer_class = ProfileUserSerializer
 
     def get_object(self):
