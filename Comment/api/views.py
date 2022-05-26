@@ -50,11 +50,12 @@ class CommentUpdateDeleteView(APIView):
     permission_classes = [IsSuperUserOrOwnerOrReadOnly, ]
 
     def get_object(self):
-        blog = get_object_or_404(Blog, id=self.kwargs['pk'])
-        return get_object_or_404(Comments, post=blog, user=self.request.user)
+        blog = get_object_or_404(Blog, slug=self.kwargs['slug'])
+        return get_object_or_404(Comments, post=blog, id=self.kwargs['pk'])
 
     def put(self, request, *args, **kwargs):
         comment = self.get_object()
+        self.check_object_permissions(request, comment)
         serializer = self.serializer_class(comment, data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
@@ -64,5 +65,6 @@ class CommentUpdateDeleteView(APIView):
 
     def delete(self, request, *args, **kwargs):
         comment = self.get_object()
+        self.check_object_permissions(request, comment)
         comment.delete()
         return Response({"message": "comment is deleted !"}, status=status.HTTP_204_NO_CONTENT)
