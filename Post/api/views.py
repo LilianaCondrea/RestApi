@@ -37,6 +37,7 @@ class BlogDetailUpdateDeleteView(RetrieveUpdateDestroyAPIView):
     def get_object(self):
         slug = self.kwargs['slug']
         blog = get_object_or_404(Blog, slug__exact=slug)
+        self.check_object_permissions(self.request, blog)
         blog.visited += 1
         blog.save()
         return blog
