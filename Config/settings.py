@@ -175,3 +175,6 @@ simplejwt = {
 REST_AUTH_SERIALIZERS = {
     'LOGIN_SERIALIZER': 'Account.api.serializers.AuthLoginSerializer',
 }
+REST_AUTH_REGISTER_SERIALIZERS = {
+    'REGISTER_SERIALIZER': 'Account.api.serializers.AuthRegisterSerializer',
+}
