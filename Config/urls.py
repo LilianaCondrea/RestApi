@@ -2,7 +2,9 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from dj_rest_auth.views import PasswordResetView, PasswordResetConfirmView
+from dj_rest_auth.views import (
+    PasswordResetView, PasswordResetConfirmView
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
