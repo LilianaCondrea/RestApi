@@ -8,7 +8,7 @@
 *.pyc
 __pycache__/
 local_settings.py
-db.sqlite3
+code/db.sqlite3
 db.sqlite3-journal
 media
 
@@ -21,7 +21,7 @@ media
 *.py[cod]
 *$py.class
 
-# C extensions
+# C Extensions
 *.so
 
 # Distribution / packaging
