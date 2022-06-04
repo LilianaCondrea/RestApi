@@ -54,10 +54,11 @@ class AuthRegisterSerializer(RegisterSerializer):
     phone = serializers.CharField(required=True, write_only=True, allow_blank=True, max_length=15)
 
     def validate_phone(self, value):
-        if not value:
-            raise serializers.ValidationError('Phone number is required.')
-        elif not value.isdigit():
+        user = get_user_model().objects.filter(phone=value)
+        if not value.isdigit():
             raise serializers.ValidationError('Phone number must be numeric.')
+        elif user.exists():
+            raise serializers.ValidationError('Phone number already exists with another user.')
         return value
 
     def get_cleaned_data(self):
