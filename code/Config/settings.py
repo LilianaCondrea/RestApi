@@ -76,10 +76,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Config.wsgi.application'
 
-CSRF_TRUSTED_ORIGINS = ['https://*.127.0.0.1']
-
-
-
 DATABASES = {
     'default': {
         'ENGINE': config('ENGINE'),
@@ -121,6 +117,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1']
+
 # All-Auth Configurations
 
 AUTHENTICATION_BACKENDS = [
@@ -130,6 +128,7 @@ AUTHENTICATION_BACKENDS = [
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 ACCOUNT_LOGOUT_ON_GET = True
 REST_AUTH_TOKEN_MODEL = None
 

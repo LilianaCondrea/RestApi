@@ -1,9 +1,11 @@
+from allauth.account.views import ConfirmEmailView
+from dj_rest_auth.registration.views import VerifyEmailView, ResendEmailVerificationView
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
 from dj_rest_auth.views import (
-    PasswordResetView, PasswordResetConfirmView
+    PasswordResetView, PasswordResetConfirmView,
 )
 
 from drf_yasg.views import get_schema_view
@@ -26,12 +28,20 @@ urlpatterns = [
     path('account/', include('Account.urls')),
     path('blog/', include('Post.urls')),
     path('comment/', include('Comment.urls')),
-    # Password Reset
 
-    path('', include('allauth.urls')),
-    path('account/api/password_reset/', PasswordResetView.as_view(), name='password_reset'),
+    # Password Reset
+    path('account/api/password_reset/',
+         PasswordResetView.as_view(), name='password_reset'),
     path('account/api/password_reset_confirm/<uidb64>/<token>/',
          PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+
+    # Verification Email
+    path('account/api/resend_verification_email/',
+         ResendEmailVerificationView.as_view(), name="rest_resend_email"),
+    path('account/api/email_verification_sent/',
+         ConfirmEmailView.as_view(), name='account_email_verification_sent'),
+    path('account/api/confirm-email/<str:key>/',
+         VerifyEmailView.as_view(), name='account_confirm_email'),
 
     # Api Documentation
     path('swagger/',
