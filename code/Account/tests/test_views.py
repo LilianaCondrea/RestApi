@@ -43,18 +43,18 @@ class AccountViewApiTest(APITestCase):
         serializer = UserListSerializer(
             data, many=True, context={'request': request}
         )
-        if self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.jwt_user2.access_token}"):
-            self.assertEqual(response.status_code, 403)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, serializer.data)
         self.assertEqual(len(response.data), len(data))
         self.assertEqual(response.data[0]['username'], data[0].username)
 
     def test_user_detail_view(self):
-        response = self.client.get(reverse('Account:user_detail', kwargs={'pk': self.user2.pk}))
+        response = self.client.get(
+            reverse('Account:user_detail', kwargs={'pk': self.user2.pk}))
         data = get_user_model().objects.get(id=self.user2.pk)
         factory = APIRequestFactory()
-        request = factory.get(reverse('Account:user_detail', kwargs={'pk': self.user2.pk}))
+        request = factory.get(
+            reverse('Account:user_detail', kwargs={'pk': self.user2.pk}))
         serializer = UserDetailSerializer(data, context={'request': request})
 
         self.assertEqual(response.status_code, 200)
@@ -74,21 +74,44 @@ class AccountViewApiTest(APITestCase):
             },
             format='json',
         )
-        if self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.jwt_user3.access_token}"):
-            self.assertEqual(response.status_code, 403)
         self.assertEqual(response.status_code, 200)
         self.assertNotEqual(response.data['username'], 'seconduser')
         self.assertEqual(response.data['username'], 'new_username')
 
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {self.jwt_user3.access_token}"
+        )
+        response = self.client.put(
+            reverse('Account:user_detail', kwargs={'pk': self.user2.pk}),
+            {
+                'username': 'new_username',
+                'email': 'new_username2@email.com',
+                'phone': 12345678920,
+                'password': 'new_password!123',
+            },
+            format='json',
+        )
+        self.assertEqual(response.status_code, 403)
+
     def test_user_delete_view(self):
+
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {self.jwt_user3.access_token}"
+        )
+        response = self.client.delete(
+            reverse('Account:user_detail', kwargs={'pk': self.user2.pk})
+        )
+
+        self.assertEqual(response.status_code, 403)
+
         self.client.credentials(
             HTTP_AUTHORIZATION=f"Bearer {self.jwt_user2.access_token}",
         )
         response = self.client.delete(
             reverse('Account:user_detail', kwargs={'pk': self.user2.pk})
         )
-        if self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.jwt_user3.access_token}"):
-            self.assertEqual(response.status_code, 403)
+
         self.assertEqual(response.status_code, 204)
-        self.assertFalse(get_user_model().objects.filter(id=self.user2.pk).exists())
+        self.assertFalse(get_user_model().objects.filter(
+            id=self.user2.pk).exists())
         self.assertEqual(get_user_model().objects.count(), 2)
