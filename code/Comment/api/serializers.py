@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from Comment.models import Comments
+from Comment.models import Comments, Reply_Comment
 
 
 class CommentListSerializer(serializers.ModelSerializer):
@@ -18,4 +18,17 @@ class CommentCreateUpdateDeleteSerializer(serializers.ModelSerializer):
         model = Comments
         fields = (
             'comment',
+        )
+
+
+class ReplyCommentSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
+
+    def get_user(self, obj):
+        return obj.user.username
+
+    class Meta:
+        model = Reply_Comment
+        fields = (
+            'user', 'reply_text',
         )
