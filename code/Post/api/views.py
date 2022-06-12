@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
 from rest_framework.generics import ListAPIView, RetrieveUpdateDestroyAPIView, CreateAPIView
+from rest_framework.views import APIView, Response, status
 from rest_framework.permissions import IsAuthenticated
 from Extensions.throttling import CreateBlogThrottle
 from Post.models import Blog, Category
@@ -55,3 +56,18 @@ class BlogCreateView(CreateAPIView):
         return serializer.save(
             user=self.request.user
         )
+
+
+class BlogsLikeApi(APIView):
+    permission_classes = [IsAuthenticated, ]
+
+    def get(self, request, slug):
+        blog = get_object_or_404(Blog, slug__exact=slug)
+        if request.user in blog.likes.all():
+            blog.likes.remove(request.user)
+            return Response({'message': 'like was deleted'},
+                status=status.HTTP_200_OK)
+        else:
+            blog.likes.add(request.user)
+            return Response({'message': 'like was added'},
+                            status=status.HTTP_200_OK)

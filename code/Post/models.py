@@ -51,6 +51,12 @@ class Blog(models.Model):
         blank=True,
         verbose_name=_('Visited'),
     )
+    likes = models.ManyToManyField(
+        get_user_model(),
+        blank=True,
+        related_name='likes',
+        verbose_name=_('Likes'),
+    )
     category = models.ForeignKey(
         Category,
         on_delete=models.CASCADE,
