@@ -1,3 +1,4 @@
+from unicodedata import category
 from django.utils.text import slugify
 from rest_framework import serializers
 from Post.models import Blog, Category
@@ -17,8 +18,8 @@ class BlogListSerializer(serializers.ModelSerializer):
         model = Blog
         fields = [
             'writer', 'content',
-            'category', 'description',
-            'poster', 'visited', 'created_at',
+            'category', 'poster',
+            'created_at'
         ]
 
     def get_title(self, obj):
@@ -26,22 +27,33 @@ class BlogListSerializer(serializers.ModelSerializer):
 
 
 class BlogDetailSerializer(serializers.ModelSerializer):
+    share = serializers.HyperlinkedIdentityField(
+        view_name='Post:blog_detail',
+        lookup_field='slug',
+    )
+    writer = serializers.ReadOnlyField(source='user.username')
+
     class Meta:
         model = Blog
         fields = [
-            'content', 'category',
-            'description', 'poster'
+            'share', 'writer', 'content',
+            'category', 'description', 'poster',
+            'likes', 'visited', 'created_at',
+            'updated_at'
         ]
+        read_only_fields = ['likes']
         extra_kwargs = {
-            'category': {'required': True},
             'poster': {'required': True},
         }
 
+    def get_likes(self, obj):
+        return {
+            'count': obj.likes.count(),
+            'user': [user.username for user in obj.likes.all()]
+        }
+
     def update(self, instance, validated_data):
-        instance.content = validated_data.get('content', instance.content)
-        instance.category = validated_data.get('category', instance.category)
-        instance.description = validated_data.get('description', instance.description)
-        instance.poster = validated_data.get('poster', instance.poster)
+        super().update(instance, validated_data)
         instance.slug = slugify(instance.content)
         instance.save()
         return instance
