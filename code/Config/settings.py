@@ -9,7 +9,8 @@ SECRET_KEY = config('SECRET_KEY')
 
 DEBUG = config('DEBUG', cast=bool)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*', cast=lambda v: [s.strip() for s in v.split(',')])
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*',
+                       cast=lambda v: [s.strip() for s in v.split(',')])
 
 
 AUTH_USER_MODEL = 'Account.User'
@@ -158,6 +159,10 @@ REST_FRAMEWORK = {
         'django_filters.rest_framework.DjangoFilterBackend',
         'rest_framework.filters.SearchFilter',
         'rest_framework.filters.OrderingFilter',
+    ],
+    'DEFAULT_THROTTLE_CLASSES': [
+        'Extensions.throttling.AuthUserThrottle',
+        'Extensions.throttling.NoneAuthUserThrottle'
     ],
 }
 
