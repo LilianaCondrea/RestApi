@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
+from django.utils import timezone
+from .managers import BlogManager
 
 
 class Category(models.Model):
@@ -14,6 +16,11 @@ class Category(models.Model):
 
 
 class Blog(models.Model):
+    POST_STATUS_CHOICES = (
+        ('0', 'draft'),
+        ('1', 'published'),
+        ('2', 'deleted'),
+    )
     user = models.ForeignKey(
         get_user_model(),
         on_delete=models.CASCADE,
@@ -21,6 +28,14 @@ class Blog(models.Model):
         blank=False,
         verbose_name=_('Author'),
 
+    )
+    status = models.CharField(
+        max_length=1,
+        default=0,
+        choices=POST_STATUS_CHOICES,
+        null=False,
+        blank=False,
+        verbose_name=_('Status'),
     )
     slug = models.SlugField(
         max_length=100,
@@ -78,6 +93,14 @@ class Blog(models.Model):
         auto_now=True,
         verbose_name=_('Updated '),
     )
+    published_at = models.DateTimeField(
+        default=None,
+        verbose_name=_('Published Date'),
+        blank=True,
+        null=True
+    )
+
+    objects = BlogManager()
 
     def __str__(self):
         return f"{self.user.username} - {self.content}"
@@ -85,7 +108,9 @@ class Blog(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.content)
-        super().save(*args, **kwargs)
+        if self.published_at is None and self.status == '1':
+            self.published_at = timezone.now()
+        super(Blog, self).save(*args, **kwargs)
 
     class Meta:
         verbose_name = _('Blog')
