@@ -17,18 +17,16 @@ class CategoryListView(ListAPIView):
     serializer_class = CategorySerializer
 
 
-# ______________________________________________
-
 class BlogListView(ListAPIView):
-    queryset = Blog.objects.all()
     serializer_class = BlogListSerializer
     filterset_fields = ['category__title', 'allow_comment', ]
     search_fields = ['content', 'description', 'category__title', ]
     ordering_fields = ['visited', 'created_at', ]
     pagination_class = CustomPagination
 
+    def get_queryset(self):
+        return Blog.objects.published()
 
-# ______________________________________________
 
 class BlogDetailUpdateDeleteView(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsSuperUserOrOwnerOrReadOnly, ]
@@ -43,8 +41,6 @@ class BlogDetailUpdateDeleteView(RetrieveUpdateDestroyAPIView):
         blog.save()
         return blog
 
-
-# ______________________________________________
 
 class BlogCreateView(CreateAPIView):
     permission_classes = [IsAuthenticated, ]
@@ -66,7 +62,7 @@ class BlogsLikeApi(APIView):
         if request.user in blog.likes.all():
             blog.likes.remove(request.user)
             return Response({'message': 'like was deleted'},
-                status=status.HTTP_200_OK)
+                            status=status.HTTP_200_OK)
         else:
             blog.likes.add(request.user)
             return Response({'message': 'like was added'},

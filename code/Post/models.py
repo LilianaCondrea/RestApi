@@ -19,7 +19,7 @@ class Blog(models.Model):
     POST_STATUS_CHOICES = (
         ('0', 'draft'),
         ('1', 'published'),
-        ('2', 'deleted'),
+
     )
     user = models.ForeignKey(
         get_user_model(),
