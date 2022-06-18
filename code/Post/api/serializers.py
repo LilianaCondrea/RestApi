@@ -1,4 +1,3 @@
-from unicodedata import category
 from django.utils.text import slugify
 from rest_framework import serializers
 from Post.models import Blog, Category
@@ -10,20 +9,28 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class BlogListSerializer(serializers.ModelSerializer):
+class BlogListSerializer(serializers.HyperlinkedModelSerializer):
+    url = serializers.HyperlinkedIdentityField(
+        view_name='blog_detail',
+        lookup_field='slug'
+    )
     writer = serializers.ReadOnlyField(source='user.username')
     category = serializers.SerializerMethodField('get_title')
+    description = serializers.SerializerMethodField('get_description')
 
     class Meta:
         model = Blog
         fields = [
-            'writer', 'content',
+            'url', 'writer', 'content',
             'category', 'poster',
-            'created_at'
+            'description', 'published_at',
         ]
 
     def get_title(self, obj):
         return obj.category.title
+
+    def get_description(self, obj):
+        return obj.description[:150] + '...'
 
 
 class BlogDetailSerializer(serializers.ModelSerializer):
@@ -31,7 +38,9 @@ class BlogDetailSerializer(serializers.ModelSerializer):
         view_name='Post:blog_detail',
         lookup_field='slug',
     )
+    likes = serializers.SerializerMethodField()
     writer = serializers.ReadOnlyField(source='user.username')
+    category = serializers.SerializerMethodField()
 
     class Meta:
         model = Blog
@@ -51,6 +60,9 @@ class BlogDetailSerializer(serializers.ModelSerializer):
             'count': obj.likes.count(),
             'user': [user.username for user in obj.likes.all()]
         }
+
+    def get_category(self, obj):
+        return obj.category.title
 
     def update(self, instance, validated_data):
         super().update(instance, validated_data)
