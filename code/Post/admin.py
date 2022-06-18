@@ -6,7 +6,16 @@ from .models import Blog, Category
 class BlogAdmin(admin.ModelAdmin):
     list_display = ('content', 'user', 'category',)
     prepopulated_fields = {'slug': ('content',)}
+    list_per_page = 20
+    search_fields = (
+        'content',
+        'user__username',
+        'category__title'
+    )
+    filter_horizontal = ('likes',)
+    ordering = ('-visited',)
     actions = ['make_published', ]
+    list_filter = ('status',)
 
     @admin.action(description='Publish selected Blogs')
     def make_published(self, request, queryset):
