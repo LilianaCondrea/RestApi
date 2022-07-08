@@ -1,3 +1,4 @@
+import json
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from rest_framework.test import APITestCase
@@ -211,3 +212,61 @@ class AccountViewApiTest(APITestCase):
             reverse('Account:user_detail', kwargs={'pk': self.user3.pk})
         )
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_user_profile_status_code(self):
+        response = self.client.get(
+            reverse("Account:user_profile", kwargs={'pk': self.user2.pk})
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_user_profile_not_found(self):
+        response = self.client.get(
+            reverse("Account:user_profile", kwargs={'pk': 0})
+        )
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_user_profile_update(self):
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {self.jwt_user2.access_token}"
+        )
+        update_data = {
+            "first_name": "updated_first",
+            "last_name": "updated_last",
+            "gender": "M",
+        }
+        response = self.client.put(
+            reverse("Account:user_profile", kwargs={'pk': self.user2.pk}),
+            data=update_data
+        )
+        info = json.loads(response.content)
+        self.assertEqual(info.get("first_name"), update_data.get("first_name"))
+
+    def test_user_profile_wrong_update(self):
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {self.jwt_user2.access_token}"
+        )
+
+        response = self.client.put(
+            reverse("Account:user_profile", kwargs={'pk': self.user2.pk}),
+            data={"gender": "Wrong"}
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_user_profile_delete(self):
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {self.jwt_user2.access_token}"
+        )
+        response = self.client.delete(
+            reverse("Account:user_profile", kwargs={'pk': self.user2.pk}),
+        )
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_user_profile_delete_forbidden(self):
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {self.jwt_user3.access_token}"
+        )
+        response = self.client.delete(
+            reverse("Account:user_profile", kwargs={'pk': self.user2.pk}),
+        )
+        print(response.status_code)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
