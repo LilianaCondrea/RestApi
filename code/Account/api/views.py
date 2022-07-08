@@ -3,9 +3,13 @@ from django.shortcuts import get_object_or_404
 from rest_framework.generics import ListAPIView, RetrieveUpdateDestroyAPIView
 from ..models import Profile
 from .serializers import (
-    UserListSerializer, UserDetailSerializer, ProfileUserSerializer
+    UserListSerializer, UserDetailSerializer,
+    ProfileUserSerializer
 )
-from Extensions.permissions import IsSuperUserOrUserOrReadOnly, IsSuperUser
+from Extensions.permissions import (
+    IsSuperUserOrUserOrReadOnly, IsSuperUser,
+    IsSuperUserOrOwnerOrReadOnly
+)
 from Extensions.pagination import CustomPagination
 
 
@@ -33,7 +37,7 @@ class UserDetailView(RetrieveUpdateDestroyAPIView):
 
 
 class ProfileUserView(RetrieveUpdateDestroyAPIView):
-    permission_classes = (IsSuperUserOrUserOrReadOnly,)
+    permission_classes = (IsSuperUserOrOwnerOrReadOnly,)
     serializer_class = ProfileUserSerializer
 
     def get_object(self):
