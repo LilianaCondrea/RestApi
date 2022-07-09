@@ -268,5 +268,4 @@ class AccountViewApiTest(APITestCase):
         response = self.client.delete(
             reverse("Account:user_profile", kwargs={'pk': self.user2.pk}),
         )
-        print(response.status_code)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
