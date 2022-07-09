@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 from rest_framework.generics import CreateAPIView
-from rest_framework.permissions import IsAuthenticated,IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.views import APIView, Response, status
 from rest_framework.exceptions import ValidationError
 from .serializers import (
@@ -24,7 +24,7 @@ class CommentCreateView(CreateAPIView):
         user = self.request.user
         if Comments.objects.filter(post=blog, user=user).exists():
             raise ValidationError('You can only comment once for this blog !')
-        elif blog.allow_comment is False:
+        if blog.allow_comment is False:
             raise ValidationError('This blog is not open for commenting !')
         serializer.save(user=user, post=blog)
 
@@ -119,5 +119,6 @@ class ReplyCommentUpdateDeleteView(APIView):
 
     def delete(self, request, *args, **kwargs):
         reply = self.get_object()
+        self.check_object_permissions(request, reply)
         reply.delete()
         return Response({"message": "reply is deleted !"}, status=status.HTTP_204_NO_CONTENT)
